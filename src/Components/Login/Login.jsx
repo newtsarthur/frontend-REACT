@@ -8,8 +8,8 @@ import "./Login.css";
 
 const Login = () => {
 
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
 
     // const handleSubmit = (event) => {
     //     event.preventDefault();
@@ -36,9 +36,9 @@ const Login = () => {
         event.preventDefault(); // Evita recarregar a página ao enviar o formulário
     
         try {
-            const response = await axios.post('http://localhost:8080/login', { // Endpoint correto
-                username,
-                password
+            const response = await axios.post('http://localhost:8080/auth/login', { // Endpoint correto
+                email,
+                senha
             });
     
             console.log('Login bem-sucedido:', response.data);
@@ -55,11 +55,11 @@ const Login = () => {
             <form onSubmit={handleSubmit}>
                 <h1>Faça login</h1>
                 <div className="input-field">
-                    <input type="email" placeholder="Email" onChange={(e) => setUsername(e.target.value)}/>
+                    <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)}/>
                     <FaUser className="icon" />
                 </div>
                 <div className="input-field">
-                    <input type="password" placeholder="Senha" onChange={(e) => setPassword(e.target.value)}/>
+                    <input type="password" placeholder="Senha" onChange={(e) => setSenha(e.target.value)}/>
                     <FaLock className="icon" />
                 </div>
 
