@@ -10,33 +10,12 @@ const Login = () => {
 
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
-
-    // const handleSubmit = (event) => {
-    //     event.preventDefault();
-    //     console.log(username, password);
-
-    //     console.log("Envio");
-    // }
-
-
-    // const handleSubmit = async () => {
-    //     try {
-    //         const response = await axios.post('http://localhost:8080/usuarios', {
-    //             username: username,
-    //             password: password
-    //         });
-    //         console.log('Deu certo?');
-    //         console.log(response.data);
-    //     } catch (error) {
-    //         console.error('Erro ao tentar fazer login:', error);
-    //     }
-    // };
-
+    
     const handleSubmit = async (event) => {
-        event.preventDefault(); // Evita recarregar a página ao enviar o formulário
+        event.preventDefault();
     
         try {
-            const response = await axios.post('http://localhost:8080/auth/login', { // Endpoint correto
+            const response = await axios.post('http://localhost:8080/auth/login', {
                 email,
                 senha
             });
