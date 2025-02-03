@@ -2,6 +2,8 @@ import { FaUser, FaLock } from "react-icons/fa";
 
 import { useState } from "react";
 
+import axios from "axios";
+
 import "./Login.css";
 
 const Login = () => {
@@ -9,12 +11,44 @@ const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        console.log(username, password);
+    // const handleSubmit = (event) => {
+    //     event.preventDefault();
+    //     console.log(username, password);
 
-        console.log("Envio");
-    }
+    //     console.log("Envio");
+    // }
+
+
+    // const handleSubmit = async () => {
+    //     try {
+    //         const response = await axios.post('http://localhost:8080/usuarios', {
+    //             username: username,
+    //             password: password
+    //         });
+    //         console.log('Deu certo?');
+    //         console.log(response.data);
+    //     } catch (error) {
+    //         console.error('Erro ao tentar fazer login:', error);
+    //     }
+    // };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault(); // Evita recarregar a página ao enviar o formulário
+    
+        try {
+            const response = await axios.post('http://localhost:8080/login', { // Endpoint correto
+                username,
+                password
+            });
+    
+            console.log('Login bem-sucedido:', response.data);
+            alert('Login realizado com sucesso!');
+        } catch (error) {
+            console.error('Erro ao tentar fazer login:', error);
+            alert('Falha no login. Verifique suas credenciais.');
+        }
+    };
+    
 
     return (
         <div className="container">
