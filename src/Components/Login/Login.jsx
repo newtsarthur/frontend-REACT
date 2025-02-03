@@ -2,30 +2,43 @@ import { FaUser, FaLock } from "react-icons/fa";
 
 import { useState } from "react";
 
+import axios from "axios";
+
 import "./Login.css";
 
 const Login = () => {
 
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-
-    const handleSubmit = (event) => {
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
+    
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log(username, password);
-
-        console.log("Envio");
-    }
+    
+        try {
+            const response = await axios.post('http://localhost:8080/auth/login', {
+                email,
+                senha
+            });
+    
+            console.log('Login bem-sucedido:', response.data);
+            alert('Login realizado com sucesso!');
+        } catch (error) {
+            console.error('Erro ao tentar fazer login:', error);
+            alert('Falha no login. Verifique suas credenciais.');
+        }
+    };
+    
 
     return (
         <div className="container">
             <form onSubmit={handleSubmit}>
                 <h1>Faça login</h1>
                 <div className="input-field">
-                    <input type="email" placeholder="Email" onChange={(e) => setUsername(e.target.value)}/>
+                    <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)}/>
                     <FaUser className="icon" />
                 </div>
                 <div className="input-field">
-                    <input type="password" placeholder="Senha" onChange={(e) => setPassword(e.target.value)}/>
+                    <input type="password" placeholder="Senha" onChange={(e) => setSenha(e.target.value)}/>
                     <FaLock className="icon" />
                 </div>
 
