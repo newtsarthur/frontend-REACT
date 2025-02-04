@@ -1,43 +1,47 @@
-import { FaUser, FaLock } from "react-icons/fa";
-
 import { useState } from "react";
+
+import { FaUser, FaLock, FaEnvelope } from "react-icons/fa";
 
 import axios from "axios";
 
-import "./Login.css";
-
 import { Link } from 'react-router-dom';
 
-const Login = () => {
+import "./Cadastro.css";
 
+const Cadastro = () => {
+    const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
-    
+
     const handleSubmit = async (event) => {
         event.preventDefault();
-    
-        try {
-            const response = await axios.post('http://localhost:8080/auth/login', {
+
+        try{
+            const response = await axios.post('http://localhost:8080/usuarios', {
+                nome,
                 email,
                 senha
             });
     
-            console.log('Login bem-sucedido:', response.data);
-            alert('Login realizado com sucesso!');
+            console.log('Conta criada com sucesso:', response.data);
+            alert('Conta criada com sucesso!');
         } catch (error) {
-            console.error('Erro ao tentar fazer login:', error);
-            alert('Falha no login. Verifique suas credenciais.');
+            console.error('Erro ao tentar criar conta:', error);
+            alert('Falha ao criar conta. Verifique suas credenciais.');
         }
     };
-    
 
     return (
         <div className="container">
             <form onSubmit={handleSubmit}>
-                <h1>Faça login</h1>
+                <h1>Cadastre sua conta</h1>
+                <div className="input-field">
+                    <input type="text" placeholder="Nome" onChange={(e) => setNome(e.target.value)}/>
+                    <FaUser className="icon" />
+                </div>
                 <div className="input-field">
                     <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)}/>
-                    <FaUser className="icon" />
+                    <FaEnvelope className="icon" />
                 </div>
                 <div className="input-field">
                     <input type="password" placeholder="Senha" onChange={(e) => setSenha(e.target.value)}/>
@@ -51,15 +55,14 @@ const Login = () => {
                     </label>
                     <a href="#">Esqueceu a senha?</a>
                 </div>
-                <button>Entrar</button>
+                <button>Criar</button>
                 <div className="signup-link">
                     <p>
-                        Não tem uma conta?<Link to="/cadastro"> Registrar</Link>
+                        Já tem uma conta?<Link to="/login"> Faça login</Link>
                     </p>
                 </div>
             </form>
         </div>
     )
 }
-
-export default Login
+export default Cadastro
