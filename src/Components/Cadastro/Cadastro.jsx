@@ -12,9 +12,15 @@ const Cadastro = () => {
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
+    const [confirmarSenha, setConfirmarSenha] = useState("");
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        if (senha !== confirmarSenha) {
+            alert("As senhas não coincidem. Por favor, verifique.");
+            return;
+          }
 
         try{
             const response = await axios.post('http://localhost:8080/usuarios', {
@@ -45,6 +51,10 @@ const Cadastro = () => {
                 </div>
                 <div className="input-field">
                     <input type="password" placeholder="Senha" onChange={(e) => setSenha(e.target.value)}/>
+                    <FaLock className="icon" />
+                </div>
+                <div className="input-field">
+                    <input type="password" placeholder="Confirme sua senha" onChange={(e) => setConfirmarSenha(e.target.value)}/>
                     <FaLock className="icon" />
                 </div>
 
