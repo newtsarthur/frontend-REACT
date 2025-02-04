@@ -31,10 +31,15 @@ const Cadastro = () => {
     
             console.log('Conta criada com sucesso:', response.data);
             alert('Conta criada com sucesso!');
-        } catch (error) {
-            console.error('Erro ao tentar criar conta:', error);
-            alert('Falha ao criar conta. Verifique suas credenciais.');
-        }
+          } catch (error) {
+            if (error.response && error.response.status === 400) {
+              alert('Já existe uma conta com esse email!');
+              setErro(error.response.data);
+            } else {
+              console.error('Erro ao tentar criar conta:', error);
+              alert('Falha ao criar conta. Verifique suas credenciais.');
+            }
+          }
     };
 
     return (
