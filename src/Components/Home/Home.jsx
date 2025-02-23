@@ -5,6 +5,7 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "./Home.css";
+import Footer from "../Footer/Footer.jsx"
 
 // Importando listas de IDs permitidos
 import allowedMoviesJson from "./ids_filmes.json";
@@ -157,14 +158,7 @@ export default function SuperFlixPlayer() {
 
   return (
     <div className="bg-black text-white min-h-screen">
-      <header className="banner">
-        <div className="banner__contents">
-          <h1 className="banner__title">SuperFlix Player</h1>
-          <p className="banner__description">Assista seus filmes, séries e animes favoritos!</p>
-        </div>
-      </header>
-
-      <div className="p-8 flex flex-col items-center">
+            <div className="p-8 flex flex-col items-center">
         <input
           className="nav__input"
           type="text"
@@ -179,6 +173,14 @@ export default function SuperFlixPlayer() {
           Buscar
         </button>
       </div>
+      
+      <header className="banner">
+        
+        <div className="banner__contents">
+          <h1 className="banner__title">SuperFlix Player</h1>
+          <p className="banner__description">Assista seus filmes, séries e animes favoritos!</p>
+        </div>
+      </header>
 
       {/* 🔥 Carrossel de Pesquisa */}
       {movies.length > 0 && (
@@ -215,8 +217,10 @@ export default function SuperFlixPlayer() {
           </Swiper>
         </div>
       )}
-
-      {embedUrl && <iframe className="video__player w-full h-96 mt-8" src={embedUrl} frameBorder="0" allowFullScreen></iframe>}
+      <div class="container iframe">
+        {embedUrl && <iframe className="video__player w-full h-96 mt-8" src={embedUrl} frameBorder="0" allowFullScreen></iframe>}
+      </div>
+      <Footer />
     </div>
   );
 }
