@@ -1,0 +1,176 @@
+/* 🔹 Estilo geral do rodapé */
+footer {
+  /* background-color: #111; */
+  background-color: #020202;
+  color: #ccc;
+  padding: 50px 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+/* 🔹 Estilo do título principal */
+.footer-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 🔹 Layout das colunas principais */
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  text-align: center;
+}
+
+.footer-column {
+  flex: 1;
+  min-width: 250px;
+  text-align: center;
+}
+
+/* 🔹 Estilização dos títulos das colunas */
+.footer-column h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 15px;
+}
+
+/* 🔹 Lista de links */
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-column ul li {
+  margin-bottom: 8px;
+}
+
+.footer-column ul li a {
+  text-decoration: none;
+  color: #ccc;
+  font-size: 14px;
+  transition: color 0.3s ease-in-out;
+}
+
+.footer-column ul li a:hover {
+  color: #ff4040;
+}
+
+/* 🔹 Ícones das redes sociais */
+.footer-social {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.footer-social a {
+  font-size: 22px;
+  color: #ccc;
+  transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.footer-social a:hover {
+  transform: scale(1.2);
+  color: #ff4040;
+}
+
+/* 🔹 Botão do aplicativo */
+.footer-button {
+  display: inline-block;
+  background: #ff4040;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.3s ease-in-out;
+}
+
+.footer-button:hover {
+  background: #cc3232;
+}
+
+/* 🔹 Parceiros */
+.footer-partners {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.footer-partners h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.footer-partners a {
+  color: #ccc;
+  font-size: 14px;
+  margin-right: 20px;
+  transition: color 0.3s ease-in-out;
+}
+
+.footer-partners a:hover {
+  color: #ff4040;
+}
+
+/* 🔹 Linha divisória */
+.footer-divider {
+  margin-top: 30px;
+  border-top: 1px solid #444;
+  padding-top: 20px;
+  text-align: center;
+  font-size: 12px;
+  color: #777;
+}
+/* .text-2xl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+} */
+ .text-lg.c {
+  font-size: 22px;
+  margin-bottom: 10px;
+ }
+.max-w-7xl.mx-auto{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.flex.flex-wrap{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.text-gray-400 {
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+/* 🔹 Responsividade */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-social {
+    justify-content: center;
+  }
+}

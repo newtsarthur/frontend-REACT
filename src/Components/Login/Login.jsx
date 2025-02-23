@@ -1,18 +1,15 @@
 import { FaUser, FaLock } from "react-icons/fa";
-
 import { useState } from "react";
-
+import { useNavigate } from 'react-router-dom'; // 🔥 Importando useNavigate
 import axios from "axios";
-
 import "./Login.css";
-
 import { Link } from 'react-router-dom';
 
 const Login = () => {
-
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
-    
+    const navigate = useNavigate();
+
     const handleSubmit = async (event) => {
         event.preventDefault();
     
@@ -24,13 +21,13 @@ const Login = () => {
     
             console.log('Login bem-sucedido:', response.data);
             alert('Login realizado com sucesso!');
+            navigate('/home');
         } catch (error) {
             console.error('Erro ao tentar fazer login:', error);
             alert('Falha no login. Verifique suas credenciais.');
         }
     };
     
-
     return (
         <div className="container">
             <form onSubmit={handleSubmit}>
@@ -51,10 +48,16 @@ const Login = () => {
                     </label>
                     <a href="#">Esqueceu a senha?</a>
                 </div>
-                <button>Entrar</button>
+
+                {/* 🔥 Botão de login agora funciona corretamente */}
+                <button type="submit">
+                    Entrar
+                </button>
+
                 <div className="signup-link">
                     <p>
-                        Não tem uma conta?<Link to="/cadastro"> Registrar</Link>
+                        Não tem uma conta?
+                        <Link to="/cadastro"> Registrar</Link>
                     </p>
                 </div>
             </form>
@@ -62,4 +65,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default Login;
