@@ -460,6 +460,10 @@
 // }
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
 import "./Home.css";
 
 // Importando listas de IDs permitidos
@@ -467,7 +471,7 @@ import allowedMoviesJson from "./ids_filmes.json";
 import allowedSeriesJson from "./ids_series.json";
 import allowedAnimesJson from "./ids_animes.json";
 
-// Convertendo os arquivos JSON para arrays
+// Convertendo os arquivos JSON para conjuntos para busca rápida
 const allowedMovies = new Set(allowedMoviesJson.filmes || []);
 const allowedSeries = new Set(allowedSeriesJson.series || []);
 const allowedAnimes = new Set(allowedAnimesJson.animes || []);
@@ -480,12 +484,30 @@ export default function SuperFlixPlayer() {
   const [season, setSeason] = useState("");
   const [episode, setEpisode] = useState("");
 
+  // Função para traduzir texto usando a API do MyMemory (sem chave de API)
+  const translateToEnglish = async (text) => {
+    try {
+      const response = await fetch(
+        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=pt|en`
+      );
+      const data = await response.json();
+      return data.responseData.translatedText || text;
+    } catch (error) {
+      console.error("Erro na tradução:", error);
+      return text;
+    }
+  };
+
   const fetchMovies = async () => {
     if (search.length < 3) return;
     setLoading(true);
 
     try {
-      const response = await fetch(`https://search.imdbot.workers.dev/?q=${search}`);
+      // Traduzindo para inglês antes da busca
+      const translatedSearch = await translateToEnglish(search);
+      console.log(`🔍 Termo traduzido: ${search} → ${translatedSearch}`);
+
+      const response = await fetch(`https://search.imdbot.workers.dev/?q=${translatedSearch}`);
       const data = await response.json();
       console.log("📌 Resposta da API IMDb:", JSON.stringify(data, null, 2));
 
@@ -496,32 +518,32 @@ export default function SuperFlixPlayer() {
       }
 
       const filteredMovies = data.description
-      .map((movie) => {
-        const imdbId = movie["#IMDB_ID"];
-        if (!imdbId) return null;
-    
-        let type = "Série";
-        let formattedId = imdbId;
-    
-        if (allowedSeries.has(imdbId)) {
-          type = "Filme";
-          formattedId = allowedSeriesJson.series.find(id => id === imdbId) || null;
-        } else if (allowedAnimes.has(imdbId)) {
-          type = "Anime";
-          formattedId = allowedAnimesJson.animes.find(id => id === imdbId) || null;
-        }
-    
-        if (!formattedId) return null;
-    
-        return {
-          id: formattedId,
-          title: movie["#TITLE"] || "Título desconhecido",
-          image: movie["#IMG_POSTER"] || "https://via.placeholder.com/150",
-          type: type, // ✅ Agora o tipo correto
-        };
-      })
-      .filter((movie) => movie !== null);
-    
+        .map((movie) => {
+          const imdbId = movie["#IMDB_ID"];
+          if (!imdbId) return null;
+
+          let type = "Série";
+          let formattedId = imdbId;
+
+          if (allowedSeries.has(imdbId)) {
+            type = "Filme";
+            formattedId = allowedSeriesJson.series.find((id) => id === imdbId) || null;
+          } else if (allowedAnimes.has(imdbId)) {
+            type = "Anime";
+            formattedId = allowedAnimesJson.animes.find((id) => id === imdbId) || null;
+          }
+
+          if (!formattedId) return null;
+
+          return {
+            id: formattedId,
+            title: movie["#TITLE"] || "Título desconhecido",
+            image: movie["#IMG_POSTER"] || "",
+            type: type,
+          };
+        })
+        .filter((movie) => movie !== null && movie.image) // 🔥 Remove itens sem imagem
+        .slice(0, 14); // 🔥 Limita aos primeiros 14 resultados
 
       console.log("📌 Conteúdo filtrado:", filteredMovies);
       setMovies(filteredMovies);
@@ -531,6 +553,10 @@ export default function SuperFlixPlayer() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleImageError = (imdbId) => {
+    setMovies((prevMovies) => prevMovies.filter((movie) => movie.id !== imdbId));
   };
 
   const generateEmbedUrl = (movie) => {
@@ -583,62 +609,43 @@ export default function SuperFlixPlayer() {
         {loading && <p className="text-gray-400 mt-2">Buscando...</p>}
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-8">
+      {/* 🔥 Carrossel de Filmes/Séries/Animes */}
+      <div className="p-8">
         {movies.length > 0 ? (
-          movies.map((movie, index) => (
-            <div key={`${movie.id}-${index}`} className="movie-card">
-              <img src={movie.image} alt={movie.title} className="rounded-lg shadow-lg w-full h-auto" />
-              <h3 className="text-center text-lg mt-2">{movie.title} ({movie.type})</h3>
+          <Swiper
+            modules={[Navigation]}
+            spaceBetween={20}
+            slidesPerView={5}
+            navigation
+            breakpoints={{
+              320: { slidesPerView: 2 },
+              640: { slidesPerView: 3 },
+              1024: { slidesPerView: 5 },
+            }}
+          >
+            {movies.map((movie, index) => (
+              <SwiperSlide key={`${movie.id}-${index}`} className="movie-card">
+                <img
+                  src={movie.image}
+                  alt={movie.title}
+                  className="rounded-lg shadow-lg w-full h-auto"
+                  onError={() => handleImageError(movie.id)}
+                />
+                <h3 className="text-center text-lg mt-2">{movie.title} ({movie.type})</h3>
 
-              {movie.type !== "Filme" && (
-                <div className="flex flex-col mt-2">
-                  <input
-                    className="p-2 border rounded mb-2"
-                    type="number"
-                    placeholder="Temporada"
-                    value={season}
-                    onChange={(e) => setSeason(e.target.value)}
-                  />
-                  <input
-                    className="p-2 border rounded mb-2"
-                    type="number"
-                    placeholder="Episódio"
-                    value={episode}
-                    onChange={(e) => setEpisode(e.target.value)}
-                  />
-                </div>
-              )}
-
-              <button
-                className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-                onClick={() => generateEmbedUrl(movie)}
-              >
-                Assistir
-              </button>
-            </div>
-          ))
+                <button
+                  className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+                  onClick={() => generateEmbedUrl(movie)}
+                >
+                  Assistir
+                </button>
+              </SwiperSlide>
+            ))}
+          </Swiper>
         ) : (
           !loading && <p className="text-gray-400 text-center">Nenhum resultado encontrado.</p>
         )}
       </div>
-
-      {embedUrl && (
-        <div className="row flex flex-col items-center mt-8">
-          <button
-            className="mb-4 bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 transition"
-            onClick={() => setEmbedUrl(null)}
-          >
-            ✖ Fechar Player
-          </button>
-          <iframe
-            className="video__player w-full max-w-3xl h-96"
-            src={embedUrl}
-            frameBorder="0"
-            allowFullScreen
-            title="SuperFlix Player"
-          ></iframe>
-        </div>
-      )}
     </div>
   );
 }
