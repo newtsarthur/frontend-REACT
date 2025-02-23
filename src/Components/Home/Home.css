@@ -7,7 +7,8 @@
 }
 
 body {
-  background-color: #141414;
+  /* background-color: #141414; */
+  background-color: #020202;
   color: white;
 }
 
@@ -151,7 +152,48 @@ button {
 .grid::-webkit-scrollbar-track {
   background-color: #f1f1f1; /* Cor de fundo da barra de rolagem */
 }
+#launcherBg {
+  position: relative;
+  width: 100%;
+  height: 75vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 
+/* 🔥 Adiciona um overlay com ::before */
+#launcherBg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* 🔥 Deixa o fundo escuro com 60% de opacidade */
+  z-index: 1;
+}
+
+/* 🔥 Mantém o conteúdo acima da sobreposição */
+#launcherBg > * {
+  position: relative;
+  z-index: 2;
+}
+
+#launcherBg::before{
+  background-image: linear-gradient(0deg, var(--darkreader-background-020202, #020202) 0px, var(--darkreader-background-020202f5, rgba(2, 2, 2, 0.96)) 10%, var(--darkreader-background-020202e6, rgba(2, 2, 2, 0.9)) 22%, var(--darkreader-background-020202a8, rgba(2, 2, 2, 0.66)) 38%, var(--darkreader-background-0202029c, rgba(2, 2, 2, 0.61)) 58%, var(--darkreader-background-000015b3, rgba(0, 0, 17, 0.7)) 110%);
+  background-color: initial;
+}
+.p-8.od {
+  margin: 40px;
+  margin-top: 0;
+}
+.p-8.filter {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  text-align: center;
+  margin-right: 40px;
+}
 
 .movie-card {
   text-align: center;
@@ -164,18 +206,37 @@ button {
 .movie-card:hover {
   transform: scale(1.05);
 }
-
-.movie-card img {
-  width: 270px;
-  height: 270px;
-  border-radius: 10px;
+.swiper-slide {
+  float: left;
+  width: auto;
+  min-height: 1px;
+  -ms-touch-action: pan-y;
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 .swiper-slide img {
-  width: 270px;
-  height: 270px;
-  border-radius: 10px;
+  width: 14.4vw;
+  height: 20.5vw;
+  position: relative;
+  transition: .2sease-in-out;
+  overflow: hidden;
+  display: inline-block;
+  background: #000;
+  border-radius: 1.5vw;
+  -webkit-transform-origin: center;
+  -ms-transform-origin: center;
+  transform-origin: center;
+  will-change: transform;
 }
-.container.iframe {
+.container.iframe{
+  display: none;
+}
+.container.iframe.active {
+  display: block;
   width: 100%;
   margin-top: 50px;
   margin-bottom: 50px;
@@ -213,7 +274,7 @@ button {
   max-width: 100%;
   height: 600px;
   border-radius: 10px;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3) !important;
   display: flex;
   align-items: center;
   justify-content: center;

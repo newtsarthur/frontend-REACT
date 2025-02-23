@@ -1,6 +1,7 @@
 /* 🔹 Estilo geral do rodapé */
 footer {
-  background-color: #111;
+  /* background-color: #111; */
+  background-color: #020202;
   color: #ccc;
   padding: 50px 20px;
   font-family: 'Arial', sans-serif;

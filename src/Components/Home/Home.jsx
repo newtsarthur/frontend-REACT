@@ -26,9 +26,47 @@ export default function SuperFlixPlayer() {
   const [season, setSeason] = useState("");
   const [episode, setEpisode] = useState("");
   const [showRecent, setShowRecent] = useState(true);
+  const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
     fetchRecentReleases();
+  }, []);
+
+  const [backgroundImage, setBackgroundImage] = useState("");
+
+  // 🔥 Busca o anime mais popular e define como fundo
+  const fetchLatestAnimeBackground = async () => {
+    try {
+      const response = await fetch("https://kitsu.io/api/edge/anime?page[limit]=20");
+      const data = await response.json();
+
+      console.log("📌 Resposta da API Kitsu:", data);
+
+      if (!data || !data.data || !Array.isArray(data.data)) {
+        console.error("❌ Estrutura inválida recebida da API Kitsu");
+        return;
+      }
+
+      // 🎲 Sorteia uma imagem aleatória entre os primeiros
+      const randomAnime = data.data[Math.floor(Math.random() * data.data.length)];
+
+      if (randomAnime && randomAnime.attributes.coverImage) {
+        console.log("✅ Imagem selecionada:", randomAnime.attributes.coverImage.large);
+
+        // 🔥 Atualiza o estado da imagem de fundo
+        setBackgroundImage(randomAnime.attributes.coverImage.large);
+      } else {
+        console.warn("⚠️ Nenhuma imagem válida encontrada.");
+      }
+      
+    } catch (error) {
+      console.error("❌ Erro ao buscar imagens de anime:", error);
+    }
+  };
+
+  // 🔥 Chama a função quando a página carregar
+  useEffect(() => {
+    fetchLatestAnimeBackground();
   }, []);
 
   const fetchRecentReleases = async () => {
@@ -154,38 +192,45 @@ export default function SuperFlixPlayer() {
     }
 
     setEmbedUrl(url);
+    setIsActive(true);
   };
 
   return (
     <div className="bg-black text-white min-h-screen">
-            <div className="p-8 flex flex-col items-center">
-        <input
-          className="nav__input"
-          type="text"
-          placeholder="Digite o nome do filme, série ou anime"
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            if (e.target.value === "") setShowRecent(true);
-          }}
-        />
-        <button className="mt-2 bg-red-600 text-white px-4 py-2 rounded" onClick={fetchMovies}>
-          Buscar
-        </button>
-      </div>
-      
-      <header className="banner">
-        
-        <div className="banner__contents">
-          <h1 className="banner__title">SuperFlix Player</h1>
-          <p className="banner__description">Assista seus filmes, séries e animes favoritos!</p>
+      <div id="launcherBg" class="back"style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: "cover", backgroundPosition: "center"}}>
+        <div className="p-8 filter flex flex-col items-center">
+          <input
+            className="nav__input"
+            type="text"
+            placeholder="Digite o nome do filme, série ou anime"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              if (e.target.value === "") setShowRecent(true);
+            }}
+          />
+          <button className="mt-2 bg-red-600 text-white px-4 py-2 rounded" onClick={() => {
+            setEmbedUrl(null);
+            setIsActive(false);
+            fetchMovies()}}>
+            Buscar
+          </button>
         </div>
-      </header>
+        <br /><br /><br /><br /><br />        <header className="banner">
+          
+          <div className="banner__contents">
+            <h1 className="banner__title">Wavescrow Player</h1>
+            <p className="banner__description">Assista seus filmes, séries e animes favoritos!</p>
+          </div>
+        </header><br /><br /><br /><br /><br /><br /><br /><br /><br />
+
+      </div>
 
       {/* 🔥 Carrossel de Pesquisa */}
       {movies.length > 0 && (
-        <div className="p-8">
+        <div className="p-8 od">
           <h2 className="text-2xl text-white mb-4">Resultados da Pesquisa</h2>
+          <br></br>
           <Swiper modules={[Navigation]} spaceBetween={20} slidesPerView={5} navigation>
             {movies.map((movie) => (
               <SwiperSlide key={movie.id}>
@@ -202,8 +247,9 @@ export default function SuperFlixPlayer() {
 
       {/* 🔥 Carrossel de Últimos Lançamentos */}
       {showRecent && recentReleases.length > 0 && (
-        <div className="p-8">
+        <div className="p-8 od">
           <h2 className="text-2xl text-white mb-4">Últimos Lançamentos</h2>
+          <br></br>
           <Swiper modules={[Navigation]} spaceBetween={20} slidesPerView={5} navigation>
             {recentReleases.map((movie) => (
               <SwiperSlide key={movie.id}>
@@ -217,8 +263,26 @@ export default function SuperFlixPlayer() {
           </Swiper>
         </div>
       )}
-      <div class="container iframe">
+      {/* <div className={`container iframe ${isActive ? "active" : ""}`}>
         {embedUrl && <iframe className="video__player w-full h-96 mt-8" src={embedUrl} frameBorder="0" allowFullScreen></iframe>}
+      </div> */}
+            <div className={`container iframe ${isActive ? "active" : ""}`}>
+        {embedUrl && (
+          <>
+            <iframe className="video__player w-full h-96 mt-8" src={embedUrl} frameBorder="0" allowFullScreen></iframe>
+            <br></br>
+            <br></br>
+            <button
+              className="mb-4 bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 transition"
+              onClick={() => {
+                setEmbedUrl(null);
+                setIsActive(false); // 🔥 Remove a classe "active" ao fechar o player
+              }}
+            >
+              ✖ Fechar Player
+            </button>
+          </>
+        )}
       </div>
       <Footer />
     </div>
