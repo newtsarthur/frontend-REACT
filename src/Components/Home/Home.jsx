@@ -484,12 +484,30 @@ export default function SuperFlixPlayer() {
   const [season, setSeason] = useState("");
   const [episode, setEpisode] = useState("");
 
+  // Função para traduzir texto para inglês
+  const translateToEnglish = async (text) => {
+    try {
+      const response = await fetch(
+        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=pt|en`
+      );
+      const data = await response.json();
+      return data.responseData.translatedText || text;
+    } catch (error) {
+      console.error("Erro na tradução:", error);
+      return text;
+    }
+  };
+
   const fetchMovies = async () => {
     if (search.length < 3) return;
     setLoading(true);
 
     try {
-      const response = await fetch(`https://search.imdbot.workers.dev/?q=${search}`);
+      // Traduzindo para inglês antes da busca
+      const translatedSearch = await translateToEnglish(search);
+      console.log(`🔍 Termo traduzido: ${search} → ${translatedSearch}`);
+
+      const response = await fetch(`https://search.imdbot.workers.dev/?q=${translatedSearch}`);
       const data = await response.json();
       console.log("📌 Resposta da API IMDb:", JSON.stringify(data, null, 2));
 
@@ -509,10 +527,10 @@ export default function SuperFlixPlayer() {
 
           if (allowedSeries.has(imdbId)) {
             type = "Filme";
-            formattedId = allowedSeriesJson.series.find(id => id === imdbId) || null;
+            formattedId = allowedSeriesJson.series.find((id) => id === imdbId) || null;
           } else if (allowedAnimes.has(imdbId)) {
             type = "Anime";
-            formattedId = allowedAnimesJson.animes.find(id => id === imdbId) || null;
+            formattedId = allowedAnimesJson.animes.find((id) => id === imdbId) || null;
           }
 
           if (!formattedId) return null;
@@ -611,7 +629,7 @@ export default function SuperFlixPlayer() {
                   src={movie.image}
                   alt={movie.title}
                   className="rounded-lg shadow-lg w-full h-auto"
-                  onError={() => handleImageError(movie.id)} // 🔥 Remove se imagem falhar
+                  onError={() => handleImageError(movie.id)}
                 />
                 <h3 className="text-center text-lg mt-2">{movie.title} ({movie.type})</h3>
 
@@ -648,6 +666,7 @@ export default function SuperFlixPlayer() {
         )}
       </div>
 
+      {/* 🔥 Player de Vídeo */}
       {embedUrl && (
         <div className="row flex flex-col items-center mt-8">
           <button
@@ -668,3 +687,4 @@ export default function SuperFlixPlayer() {
     </div>
   );
 }
+
